@@ -2,11 +2,9 @@ import {AddTaskArgsType, ChangeRequestTaskModelType, TaskStatuses, TasksType} fr
 import {todolistsActions} from "./todolistReducer";
 import {AllThunkType, RootStateType} from "../store";
 import {todolistsAPI} from "api/todolists-api";
-
-import {handleServerNetworkError} from "utils/error-utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {appActions} from "Redux/Reducers/appReducer";
-import {createAppAsyncThunk} from "utils/createAsyncThunk";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
 
 export type TasksStateReducerType = {
     [key: string]: TasksType[]
@@ -16,19 +14,13 @@ const slice = createSlice({
     name: "tasks",
     initialState: {} as TasksStateReducerType,
     reducers: {
-        // setTasks: (state, action: PayloadAction<{ tasks: TasksType[], todolistId: string }>) => {
-        //     state[action.payload.todolistId] = action.payload.tasks
-        // },
         removeTask: (state, action: PayloadAction<{ todolistId: string, taskId: string }>) => {
             const taskIndex = state[action.payload.todolistId].findIndex((el) => {
                 el.id = action.payload.taskId
             })
             state[action.payload.todolistId].splice(taskIndex, 1)
         },
-        // addNewTask: (state, action: PayloadAction<{ task: TasksType }>) => {
-        //     debugger
-        //     state[action.payload.task.todoListId].unshift(action.payload.task)
-        // },
+
         updateTask: (state, action: PayloadAction<{ task: TasksType }>) => {
             const taskIndex = state[action.payload.task.todoListId].findIndex(el => el.id === action.payload.task.id)
             state[action.payload.task.todoListId][taskIndex] = {...state[action.payload.task.todoListId][taskIndex], ...action.payload.task}
@@ -86,7 +78,7 @@ const addTask = createAppAsyncThunk<{task: TasksType }, AddTaskArgsType>(
                 dispatch(appActions.setAppStatus({status: "succeeded"}))
                 return {task: res.data.data.item}
             } else {
-                handleServerNetworkError(res.data, dispatch)
+                handleServerAppError(res.data, dispatch)
                 return rejectWithValue(null)
             }
         }  catch(error) {

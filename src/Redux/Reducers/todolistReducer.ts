@@ -2,9 +2,9 @@ import {FilterValuesType, InitialStateType, TodolistType} from "api/typeApi";
 import {todolistsAPI} from "api/todolists-api";
 import {AllThunkType} from "../store";
 import {appActions, RequestStatusType} from "./appReducer";
-import {handleServerNetworkError} from "utils/error-utils";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {tasksThunks} from "Redux/Reducers/tasksReducer";
+import {handleServerAppError, handleServerNetworkError} from "common/utils";
 
 // const initialState: InitialStateType[] = []
 
@@ -86,7 +86,7 @@ export const removeTodolistTC = (todolistId: string):AllThunkType => {
                         entityStatus: "succeeded"
                     }))
                 } else {
-                    handleServerNetworkError(res.data, dispatch)
+                    handleServerAppError(res.data, dispatch)
                     dispatch(
                         todolistsActions.updateTodolistEntityStatus({
                             todolistId, entityStatus: "failed"
@@ -112,7 +112,7 @@ export const addNewTodolistTC = (newTodolistTitle: string):AllThunkType => {
                     dispatch(appActions.setAppStatus({status: "succeeded"}))
                     // dispatch(todolistsActions.updateTodolistEntityStatus({todolistId:newTodolistTitle, entityStatus: "succeeded"}))
                 } else {
-                    handleServerNetworkError(res.data, dispatch)
+                    handleServerAppError(res.data, dispatch)
                 }
             })
             .catch((error)=>{
@@ -131,7 +131,7 @@ export const updateTitleTodolistTC = (todolistId: string, newTitle: string):AllT
                     dispatch(todolistsActions.updateTodolistTitle({todolistId, title: newTitle}))
                     dispatch(appActions.setAppStatus({status: "succeeded"}))
                 } else {
-                    handleServerNetworkError(res.data, dispatch)
+                    handleServerAppError(res.data, dispatch)
                 }
             })
             .catch((error)=>{

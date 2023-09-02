@@ -1,11 +1,11 @@
 import {FormikErrorType} from "components/Login/Login";
 import {authAPI} from "api/todolists-api"
-import {AxiosErrorType, handleServerNetworkError} from "utils/error-utils";
 import {AllThunkType} from "../store";
 import axios from "axios";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {appActions} from "Redux/Reducers/appReducer";
 import {todolistsActions} from "Redux/Reducers/todolistReducer";
+import {AxiosError, handleServerAppError, handleServerNetworkError} from "common/utils";
 
 const slice = createSlice({
     name: "auth",
@@ -35,11 +35,11 @@ export const loginTC = (data: FormikErrorType): AllThunkType => async (dispatch)
                     dispatch(authActions.setIsLoggedIn({isLoggedIn: true}))
                     dispatch(appActions.setAppStatus({status: "succeeded"}))
                 } else {
-                    handleServerNetworkError(res.data, dispatch)
+                    handleServerAppError(res.data, dispatch)
                 }
             })
     } catch (e) {
-        if (axios.isAxiosError<AxiosErrorType>(e)) {
+        if (axios.isAxiosError<AxiosError>(e)) {
             handleServerNetworkError(e, dispatch)
         }
     }
@@ -59,7 +59,7 @@ export const logoutTC = (): AllThunkType => async (dispatch) => {
                 }
             })
     } catch (e) {
-        if (axios.isAxiosError<AxiosErrorType>(e)) {
+        if (axios.isAxiosError<AxiosError>(e)) {
             handleServerNetworkError(e, dispatch)
         }
     }
@@ -80,7 +80,7 @@ export const initializeAppTC = (): AllThunkType => async (dispatch) => {
                 }
             })
     } catch (e) {
-        if (axios.isAxiosError<AxiosErrorType>(e)) {
+        if (axios.isAxiosError<AxiosError>(e)) {
             handleServerNetworkError(e, dispatch)
         }
     }
