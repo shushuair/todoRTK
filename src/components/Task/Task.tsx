@@ -5,7 +5,7 @@ import {EditableSpan} from "../EditableSpan/EditableSpan";
 import Checkbox from "@mui/material/Checkbox";
 import s from "./Task.module.css"
 import {useAppDispatch} from "Redux/store";
-import {updateStatusTaskTC, removeTaskTC, updateTitleTaskTC, tasksActions} from "Redux/Reducers/tasksReducer";
+import {tasksActions, tasksThunks} from "Redux/Reducers/tasksReducer";
 import {TaskStatuses} from "api/typeApi";
 import {RequestStatusType} from "Redux/Reducers/appReducer";
 
@@ -23,16 +23,16 @@ export const Task = (props: TaskPropsType) => {
     const dispatch = useAppDispatch()
 
     const onTaskTitleChangeHandler = (newTitle: string) => {
-        dispatch(updateTitleTaskTC(todolistId, taskId, newTitle))
+        dispatch(tasksThunks.updateTask({todolistId, taskId, domainModel: {title: newTitle}}))
     }
     const onStatusChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const newIsDoneValue = e.currentTarget.checked
-        const status = newIsDoneValue ? TaskStatuses.Completed : TaskStatuses.New
-        dispatch(updateStatusTaskTC(todolistId,taskId, status))
+        const newStatus = newIsDoneValue ? TaskStatuses.Completed : TaskStatuses.New
+        dispatch(tasksThunks.updateTask({todolistId, taskId, domainModel: {status: newStatus}}))
     }
 
     const deleteTaskHandler = () => {
-        dispatch(tasksActions.removeTask({todolistId, taskId}))
+        dispatch(tasksThunks.removeTask({todolistId, taskId}))
     }
     const isChecked = checkedStatus === 2
 

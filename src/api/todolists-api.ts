@@ -1,11 +1,9 @@
 import axios, {AxiosResponse} from "axios";
 import {
-    updateTaskModelType,
-    updateTaskResponseType,
     TasksResponseType,
     TasksType,
     TodolistType,
-    TodoResponseType, AddTaskArgsType,
+    TodoResponseType, AddTaskArgsType, RemoveTaskArgsType, UpdateTaskModelType, ChangeRequestTaskModelType,
 } from "./typeApi";
 import {FormikErrorType} from "../components/Login/Login";
 
@@ -53,11 +51,14 @@ export const todolistsAPI = {
     addTask(arg: AddTaskArgsType){
         return instance.post<null, AxiosResponse<TodoResponseType<{item:TasksType}>>, {title: string}>(`todo-lists/${arg.todolistId}/tasks`, {title: arg.title})
     },
-    removeTask(todolistId: string, taskId:string){
-        return instance.delete<TodoResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
+    removeTask(arg: RemoveTaskArgsType){
+        return instance.delete<TodoResponseType>(`todo-lists/${arg.todolistId}/tasks/${arg.taskId}`)
     },
-    updateTask(todolistId: string, taskId:string, domainModel: updateTaskModelType){
-        return instance.put<null, AxiosResponse<updateTaskResponseType>, updateTaskModelType>(`todo-lists/${todolistId}/tasks/${taskId}`, domainModel)
+    updateTask(todolistId: string, taskId:string, model: ChangeRequestTaskModelType){
+        return instance.put<null, AxiosResponse<TodoResponseType<{item: TasksType}>>, ChangeRequestTaskModelType>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
     },
+    // updateTask(todolistId: string, taskId:string, model: ChangeRequestTaskModelType){
+    //     return instance.put<null, AxiosResponse<updateTaskResponseType>, UpdateTaskModelType>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
+    // },
 
 }

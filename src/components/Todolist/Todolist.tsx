@@ -4,7 +4,7 @@ import {Tasks} from "../Tasks/Tasks";
 import {FilterValuesType} from "api/typeApi";
 import {useAppDispatch} from "Redux/store";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
-import {removeTodolistTC, todolistsActions, updateTitleTodolistTC} from "Redux/Reducers/todolistReducer";
+import {todolistsActions, todolistThunk} from "Redux/Reducers/todolistReducer";
 import Button from "@mui/material/Button";
 import {tasksThunks} from "Redux/Reducers/tasksReducer";
 import Delete from "@mui/icons-material/Delete";
@@ -24,10 +24,10 @@ export const Todolist = (props: TodoPropsType) => {
     const {todolistId, todolistTitle,filterStatus} = props
     const dispatch = useAppDispatch()
     const removeTodolistHandler = () => {
-        dispatch(removeTodolistTC(todolistId))
+        dispatch(todolistThunk.removeTodolist(todolistId))
     }
-    const editTodoTitleHandler = (title: string) => {
-        dispatch(updateTitleTodolistTC(todolistId, title))
+    const editTodoTitleHandler = (newTitle: string) => {
+        dispatch(todolistThunk.updateTitleTodolist({todolistId, newTitleTodolist: newTitle}))
     }
     const onChangeHandler = (newValue: string) => {
         dispatch(tasksThunks.addTask({todolistId, title: newValue}))

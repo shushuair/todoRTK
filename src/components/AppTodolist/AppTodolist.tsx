@@ -2,15 +2,15 @@ import React from 'react';
 import s from "../../App.module.css";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {Todolists} from "../Todolists/Todolists";
-import {addNewTodolistTC} from "Redux/Reducers/todolistReducer";
 import {useAppDispatch, useAppSelector} from "Redux/store";
 import {Navigate} from "react-router-dom";
+import {todolistThunk} from "Redux/Reducers/todolistReducer";
 
 export const AppTodolist = () => {
     const dispatch = useAppDispatch()
     const isLoggedIn = useAppSelector<boolean>(state=>state.Auth.isLoggedIn)
     const addNewTodolist = (title: string) => {
-        dispatch(addNewTodolistTC(title))}
+        dispatch(todolistThunk.addTodolist(title))}
     if(!isLoggedIn){
         return <Navigate to={"/login"} />
     }

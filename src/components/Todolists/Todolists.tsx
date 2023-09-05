@@ -3,9 +3,9 @@ import {Todolist} from "../Todolist/Todolist";
 import {useSelector} from "react-redux";
 import {RootStateType, useAppDispatch, useAppSelector} from "Redux/store";
 import {InitialStateType} from "api/typeApi";
-import {getTodolistTC} from "Redux/Reducers/todolistReducer";
 import Grid from "@mui/material/Grid";
 import s from "./Todolists.module.css"
+import {todolistThunk} from "Redux/Reducers/todolistReducer";
 
 
 export const Todolists = () => {
@@ -14,7 +14,7 @@ export const Todolists = () => {
     const isLoggedIn = useAppSelector<boolean>(state=>state.Auth.isLoggedIn)
     useEffect(() => {
         if(isLoggedIn) {
-            dispatch(getTodolistTC())
+            dispatch(todolistThunk.getTodolist())
         }
     }, [])
     return (

@@ -63,37 +63,39 @@ export type updateTaskResponseType = {
     resultCode: number
 }
 
-export type updateTaskModelType = {
-    title?: string
-    description?: null|string
-    completed?: boolean
-    status?: TaskStatuses
-    priority?: TaskPriorities
-    startDate?: null|string
-    deadline?: null|string
-}
-
-export type UpdateDomainTaskModelType = {
-    title?: string
-    description?: string
-    status?: TaskStatuses
-    priority?: TaskPriorities
-    startDate?: string
-    deadline?: string
-}
-
 export type AddTaskArgsType = {
     todolistId: string
     title: string
 }
 
+export type RemoveTaskArgsType = {
+    todolistId: string
+    taskId: string
+}
+
+export type UpdateTaskArgsType = {
+    todolistId: string
+    taskId: string
+    domainModel: UpdateTaskModelType
+}
+
+export type UpdateTaskModelType = {
+    title?: string;
+    description?: string;
+    completed?: boolean;
+    status?: TaskStatuses;
+    priority?: TaskPriorities;
+    startDate?: string;
+    deadline?: string;
+};
+
 export type ChangeRequestTaskModelType = {
     title: string
-    description: null|string
+    description: null | string
     status: TaskStatuses
     priority: TaskPriorities
-    startDate: null|string
-    deadline: null|string
+    startDate: null | string
+    deadline: null | string
     completed: boolean
 }
 
