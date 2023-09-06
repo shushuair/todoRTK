@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import {useFormik} from "formik";
 import {useAppDispatch, useAppSelector} from "Redux/store";
 import {Navigate} from "react-router-dom";
-import {loginTC} from "Redux/Reducers/authReducer";
+import {authThunk} from "Redux/Reducers/authReducer";
 
 export type FormikErrorType = {
     email?: string,
@@ -42,7 +42,7 @@ export const Login = () => {
             return errors
         },
         onSubmit: values => {
-            dispatch(loginTC(values))
+            dispatch(authThunk.login(values))
             formik.resetForm()
         },
     })

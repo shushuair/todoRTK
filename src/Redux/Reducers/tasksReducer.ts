@@ -1,7 +1,7 @@
 import {
     AddTaskArgsType,
     ChangeRequestTaskModelType,
-    RemoveTaskArgsType,
+    RemoveTaskArgsType, ResultCode,
     TasksType,
     UpdateTaskArgsType
 } from "api/typeApi";
@@ -82,7 +82,7 @@ const addTask = createAppAsyncThunk<{ task: TasksType }, AddTaskArgsType>(
         try {
             dispatch(appActions.setAppStatus({status: "loading"}))
             const res = await todolistsAPI.addTask(arg)
-            if (res.data.resultCode === 0) {
+            if (res.data.resultCode === ResultCode.success) {
                 dispatch(appActions.setAppStatus({status: "succeeded"}))
                 return {task: res.data.data.item}
             } else {
@@ -103,7 +103,7 @@ const removeTask = createAppAsyncThunk<{ todolistId: string, taskId: string }, R
         dispatch(appActions.setAppStatus({status: "loading"}))
         try {
             const res = await todolistsAPI.removeTask(arg)
-            if (res.data.resultCode === 0) {
+            if (res.data.resultCode === ResultCode.success) {
                 dispatch(appActions.setAppStatus({status: "succeeded"}))
                 return {todolistId, taskId}
             } else {
@@ -139,7 +139,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArgsType, UpdateTaskArgsType>('
         };
         const res = await todolistsAPI.updateTask(arg.todolistId, arg.taskId, model);
 
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === ResultCode.success) {
             return {taskId: arg.taskId, domainModel: arg.domainModel, todolistId: arg.todolistId}
         } else {
             handleServerAppError(res.data, dispatch);

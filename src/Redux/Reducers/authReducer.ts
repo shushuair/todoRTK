@@ -1,11 +1,10 @@
 import {FormikErrorType} from "components/Login/Login";
 import {authAPI} from "api/todolists-api"
-import {AllThunkType} from "../store";
-import axios from "axios";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {appActions} from "Redux/Reducers/appReducer";
 import {todolistsActions} from "Redux/Reducers/todolistReducer";
-import {AxiosError, handleServerAppError, handleServerNetworkError} from "common/utils";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
+import {ResultCode} from "api/typeApi";
 
 const slice = createSlice({
     name: "auth",
@@ -20,68 +19,92 @@ const slice = createSlice({
         isInitialized: (state, action: PayloadAction<{isInitialized: boolean}>)=>{
             state.isInitialized = action.payload.isInitialized
         }
+    },
+    extraReducers: (builder) => {
+       builder
+           .addCase(authThunk.login.fulfilled, (state, action)=>{
+               state.isLoggedIn = action.payload.isLoggedIn
+           })
+           .addCase(authThunk.logout.fulfilled, (state, action)=>{
+               state.isLoggedIn = action.payload.isLoggedIn
+           })
+           .addCase(authThunk.statusLogin.fulfilled, (state, action)=>{
+               state.isLoggedIn = action.payload.isLoggedIn
+           })
+
     }
 })
-export const authReducer = slice.reducer
-export const authActions = slice.actions
+
 
 //thunks
-export const loginTC = (data: FormikErrorType): AllThunkType => async (dispatch) => {
-    dispatch(appActions.setAppStatus({status: "loading"}))
-    try {
-        await authAPI.login(data)
-            .then((res) => {
-                if (res.data.resultCode === 0) {
-                    dispatch(authActions.setIsLoggedIn({isLoggedIn: true}))
-                    dispatch(appActions.setAppStatus({status: "succeeded"}))
-                } else {
-                    handleServerAppError(res.data, dispatch)
-                }
-            })
-    } catch (e) {
-        if (axios.isAxiosError<AxiosError>(e)) {
-            handleServerNetworkError(e, dispatch)
-        }
-    }
-}
 
-export const logoutTC = (): AllThunkType => async (dispatch) => {
-    dispatch(appActions.setAppStatus({status: "loading"}))
-    try {
-        await authAPI.logout()
-            .then((res) => {
-                if (res.data.resultCode === 0) {
-                    dispatch(authActions.setIsLoggedIn({isLoggedIn: false}))
-                    dispatch(appActions.setAppStatus({status: "succeeded"}))
-                    dispatch(todolistsActions.clearTodolist())
-                } else {
-                    handleServerNetworkError(res.data, dispatch)
-                }
-            })
-    } catch (e) {
-        if (axios.isAxiosError<AxiosError>(e)) {
+const login = createAppAsyncThunk<{isLoggedIn: boolean}, FormikErrorType>(
+    "auth/login",
+    async (data: FormikErrorType, thunkAPI) => {
+        const {dispatch, rejectWithValue} = thunkAPI
+        dispatch(appActions.setAppStatus({status: "loading"}))
+        try {
+            const res = await authAPI.login(data)
+            if (res.data.resultCode === ResultCode.success) {
+                dispatch(appActions.setAppStatus({status: "succeeded"}))
+                return {isLoggedIn: true}
+            } else {
+                handleServerAppError(res.data, dispatch)
+                return rejectWithValue(null)
+            }
+        } catch (e) {
             handleServerNetworkError(e, dispatch)
+            return rejectWithValue(null)
         }
     }
-}
+)
 
-export const initializeAppTC = (): AllThunkType => async (dispatch) => {
-    dispatch(appActions.setAppStatus({status: "loading"}))
-    try {
-        await authAPI.me()
-            .then((res) => {
-                dispatch(authActions.isInitialized({isInitialized: true}))
-                if (res.data.resultCode === 0) {
-                    dispatch(authActions.setIsLoggedIn({isLoggedIn: true}))
-                    dispatch(appActions.setAppStatus({status: "succeeded"}))
-                } else {
-                    dispatch(authActions.setIsLoggedIn({isLoggedIn: false}))
-                    dispatch(appActions.setAppStatus({status: "succeeded"}))
-                }
-            })
-    } catch (e) {
-        if (axios.isAxiosError<AxiosError>(e)) {
+const logout = createAppAsyncThunk<{isLoggedIn: boolean}, void>(
+    "auth/logout",
+    async (arg, thunkAPI) => {
+        const {dispatch, rejectWithValue} = thunkAPI
+        dispatch(appActions.setAppStatus({status: "loading"}))
+        try {
+            const res = await authAPI.logout()
+            if (res.data.resultCode === ResultCode.success) {
+                dispatch(appActions.setAppStatus({status: "succeeded"}))
+                dispatch(todolistsActions.clearTodolist())
+                return {isLoggedIn: false}
+            } else {
+                handleServerAppError(res.data, dispatch)
+                return rejectWithValue(null)
+            }
+        } catch (e) {
             handleServerNetworkError(e, dispatch)
+            return rejectWithValue(null)
         }
     }
-}
+)
+
+const statusLogin = createAppAsyncThunk<{isLoggedIn: boolean}, void>(
+    "auth/statusLogin",
+    async (arg, thunkAPI) => {
+        const { dispatch, rejectWithValue } = thunkAPI
+        dispatch(appActions.setAppStatus({status: "loading"}))
+        try {
+            const res = await authAPI.me()
+            if(res.data.resultCode === ResultCode.success){
+                dispatch(appActions.setAppStatus({status: "succeeded"}))
+                return {isLoggedIn: true}
+            } else {
+                dispatch(appActions.setAppStatus({status: "succeeded"}))
+                return {isLoggedIn: false}
+            }
+        } catch (e) {
+            handleServerNetworkError(e, dispatch)
+            return rejectWithValue(null)
+        } finally {
+            dispatch(authActions.isInitialized({isInitialized: true}))
+        }
+    }
+)
+
+
+export const authReducer = slice.reducer
+export const authActions = slice.actions
+export const authThunk = { login, logout, statusLogin }

@@ -14,8 +14,8 @@ import {Navigate, NavLink, Route, Routes} from "react-router-dom";
 import {Login} from "components/Login/Login";
 import {AppTodolist} from "components/AppTodolist/AppTodolist";
 import Button from "@mui/material/Button";
-import {initializeAppTC, logoutTC} from "Redux/Reducers/authReducer";
 import {CircularProgress} from "@mui/material";
+import {authThunk} from "Redux/Reducers/authReducer";
 
 function App() {
     const status = useAppSelector<RequestStatusType>((state) => state.App.status)
@@ -23,11 +23,11 @@ function App() {
     const isInitialized = useAppSelector<boolean>(state => state.Auth.isInitialized)
     const dispatch = useAppDispatch()
     useEffect(() => {
-        dispatch(initializeAppTC())
+        dispatch(authThunk.statusLogin())
     }, [isLoggedIn])
 
     const onLogoutHandler = () => {
-        dispatch(logoutTC())
+        dispatch(authThunk.logout())
     }
     if (!isInitialized) {
         return <div

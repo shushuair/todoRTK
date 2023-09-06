@@ -33,7 +33,7 @@ export const Todolist = (props: TodoPropsType) => {
         dispatch(tasksThunks.addTask({todolistId, title: newValue}))
     }
     const newStatusFilterButton = (newStatusFilter: FilterValuesType) => {
-        dispatch(todolistsActions.updateTodolistFilter({todolistId, newStatusFilter}))
+        dispatch(todolistsActions.updateTodolistStatusFilter({todolistId, newStatusFilter}))
     }
 
     return (
