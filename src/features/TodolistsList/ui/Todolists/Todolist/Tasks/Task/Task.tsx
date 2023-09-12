@@ -6,11 +6,11 @@ import Checkbox from "@mui/material/Checkbox";
 import s from "features/TodolistsList/ui/Todolists/Todolist/Tasks/Task/Task.module.css"
 import {tasksThunks} from "features/TodolistsList/model/tasksReducer";
 import {RequestStatusType} from "app/appReducer";
-import {useAppDispatch} from "common/hooks";
+import {useActions, useAppDispatch} from "common/hooks";
 import {TaskStatuses} from "common/enums";
 
 
-export type TaskPropsType = {
+type Props = {
     todolistId: string
     taskId: string
     taskTitle: string
@@ -18,21 +18,22 @@ export type TaskPropsType = {
     entityStatus: RequestStatusType
 }
 
-export const Task = (props: TaskPropsType) => {
+export const Task = (props: Props) => {
+    const { removeTask, updateTask  } = useActions(tasksThunks)
+
     const {todolistId, taskId, taskTitle, checkedStatus} = props
-    const dispatch = useAppDispatch()
 
-    const onTaskTitleChangeHandler = (newTitle: string) => {
-        dispatch(tasksThunks.updateTask({todolistId, taskId, domainModel: {title: newTitle}}))
+    const TaskTitleChangeHandler = (newTitle: string) => {
+        updateTask({taskId: taskId, domainModel: { title: newTitle }, todolistId: todolistId})
     }
+
     const onStatusChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const newIsDoneValue = e.currentTarget.checked
-        const newStatus = newIsDoneValue ? TaskStatuses.Completed : TaskStatuses.New
-        dispatch(tasksThunks.updateTask({todolistId, taskId, domainModel: {status: newStatus}}))
+        const status = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
+        updateTask({taskId: taskId, domainModel: { status }, todolistId: todolistId})
     }
 
-    const deleteTaskHandler = () => {
-        dispatch(tasksThunks.removeTask({todolistId, taskId}))
+    const removeTaskHandler = () => {
+        removeTask({ todolistId, taskId })
     }
     const isChecked = checkedStatus === 2
 
@@ -40,9 +41,9 @@ export const Task = (props: TaskPropsType) => {
         <div className={s.TaskWrapper}>
             <Checkbox checked={isChecked} onChange={onStatusChangeHandler}/>
 
-            <EditableSpan value={taskTitle} onChange={onTaskTitleChangeHandler} disabled={props.entityStatus === 'loading'}/>
+            <EditableSpan value={taskTitle} onChange={TaskTitleChangeHandler} disabled={props.entityStatus === 'loading'}/>
             <IconButton aria-label="delete" size="large">
-                <DeleteIcon onClick={deleteTaskHandler}/>
+                <DeleteIcon onClick={removeTaskHandler}/>
             </IconButton>
         </div>
     );
