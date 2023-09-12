@@ -1,5 +1,5 @@
 import axios from "axios";
-import {appActions} from "Redux/Reducers/appReducer";
+import {appActions} from "app/appReducer";
 import {Dispatch} from "redux";
 
 type ErrorUtilsDispatchType = Dispatch
