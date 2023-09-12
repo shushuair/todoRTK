@@ -6,16 +6,16 @@ import {InitialStateType} from "features/auth/typeApi";
 import Grid from "@mui/material/Grid";
 import s from "features/TodolistsList/ui/Todolists/Todolists.module.css"
 import {todolistThunk} from "features/TodolistsList/model/todolistReducer";
-import {useAppDispatch} from "common/hooks";
+import {useActions} from "common/hooks";
 
 
 export const Todolists = () => {
-    const dispatch = useAppDispatch()
     const todolists = useSelector<RootStateType, InitialStateType[]>(state => state.Todolists)
     const isLoggedIn = useAppSelector<boolean>(state=>state.Auth.isLoggedIn)
+    const { getTodolist } = useActions(todolistThunk)
     useEffect(() => {
         if(isLoggedIn) {
-            dispatch(todolistThunk.getTodolist())
+            getTodolist()
         }
     }, [])
     return (

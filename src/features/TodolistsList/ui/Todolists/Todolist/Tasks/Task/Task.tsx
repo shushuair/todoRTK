@@ -6,9 +6,8 @@ import Checkbox from "@mui/material/Checkbox";
 import s from "features/TodolistsList/ui/Todolists/Todolist/Tasks/Task/Task.module.css"
 import {tasksThunks} from "features/TodolistsList/model/tasksReducer";
 import {RequestStatusType} from "app/appReducer";
-import {useActions, useAppDispatch} from "common/hooks";
+import {useActions} from "common/hooks";
 import {TaskStatuses} from "common/enums";
-
 
 type Props = {
     todolistId: string
@@ -20,9 +19,7 @@ type Props = {
 
 export const Task = (props: Props) => {
     const { removeTask, updateTask  } = useActions(tasksThunks)
-
     const {todolistId, taskId, taskTitle, checkedStatus} = props
-
     const TaskTitleChangeHandler = (newTitle: string) => {
         updateTask({taskId: taskId, domainModel: { title: newTitle }, todolistId: todolistId})
     }

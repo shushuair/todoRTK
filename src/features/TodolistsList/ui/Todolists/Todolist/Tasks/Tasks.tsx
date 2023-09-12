@@ -6,7 +6,7 @@ import {FilterValuesType, TasksType} from "features/auth/typeApi";
 import {RequestStatusType} from "app/appReducer";
 import s from "features/TodolistsList/ui/Todolists/Todolist/Tasks/Tasks.module.css"
 import {tasksThunks} from "features/TodolistsList/model/tasksReducer";
-import {useAppDispatch} from "common/hooks";
+import {useActions} from "common/hooks";
 
 export type TasksPropsType = {
     todolistId: string
@@ -15,10 +15,10 @@ export type TasksPropsType = {
 }
 
 export const Tasks = (props:TasksPropsType) => {
-    const dispatch = useAppDispatch()
+    const { getTasks } = useActions(tasksThunks)
     let {todolistId, filterStatus} = props
     useEffect(()=>{
-       dispatch(tasksThunks.getTasks(todolistId))
+        getTasks(todolistId)
     },[])
     let allTasks = useSelector<RootStateType, TasksType[]>(state => state.Tasks[todolistId])
     let filteredTasks = allTasks

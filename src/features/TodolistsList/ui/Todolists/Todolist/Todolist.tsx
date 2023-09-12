@@ -11,26 +11,29 @@ import IconButton from "@mui/material/IconButton";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import {RequestStatusType} from "app/appReducer";
 import s from "features/TodolistsList/ui/Todolists/Todolist/Todolist.module.css"
-import {useAppDispatch} from "common/hooks";
+import {useActions, useAppDispatch} from "common/hooks";
 
-export type TodoPropsType = {
+type Props = {
     todolistId: string
     todolistTitle: string
     filterStatus: FilterValuesType
     entityStatus: RequestStatusType
 }
 
-export const Todolist = (props: TodoPropsType) => {
-    const {todolistId, todolistTitle,filterStatus} = props
+export const Todolist = (props: Props) => {
+    const { addTask } = useActions(tasksThunks)
+    const { removeTodolist, updateTitleTodolist } = useActions(todolistThunk)
+
+    const {todolistId, todolistTitle,filterStatus, entityStatus} = props
     const dispatch = useAppDispatch()
     const removeTodolistHandler = () => {
-        dispatch(todolistThunk.removeTodolist(todolistId))
+        removeTodolist(todolistId)
     }
     const editTodoTitleHandler = (newTitle: string) => {
-        dispatch(todolistThunk.updateTitleTodolist({id: todolistId, title: newTitle}))
+        updateTitleTodolist({id: todolistId, title: newTitle})
     }
-    const onChangeHandler = (newValue: string) => {
-        dispatch(tasksThunks.addTask({todolistId, title: newValue}))
+    const addTaskHandler = (newValue: string) => {
+        addTask({todolistId, title: newValue})
     }
     const newStatusFilterButton = (newStatusFilter: FilterValuesType) => {
         dispatch(todolistsActions.updateTodolistStatusFilter({todolistId, newStatusFilter}))
@@ -42,12 +45,12 @@ export const Todolist = (props: TodoPropsType) => {
                 <h2>
                     <EditableSpan value={todolistTitle} onChange={editTodoTitleHandler}/>
                 </h2>
-                <IconButton onClick={removeTodolistHandler} disabled={props.entityStatus === "loading"} >
+                <IconButton onClick={removeTodolistHandler} disabled={entityStatus === "loading"} >
                     <Delete/>
                 </IconButton>
             </div>
             <div>
-                <AddItemForm addItem={onChangeHandler}/>
+                <AddItemForm addItem={addTaskHandler}/>
             </div>
             <Tasks todolistId={todolistId} filterStatus={filterStatus} entityStatus={props.entityStatus}/>
             <ButtonGroup variant="contained" aria-label="outlined primary button group">

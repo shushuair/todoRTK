@@ -5,13 +5,14 @@ import {Todolists} from "features/TodolistsList/ui/Todolists/Todolists";
 import {useAppSelector} from "app/store";
 import {Navigate} from "react-router-dom";
 import {todolistThunk} from "features/TodolistsList/model/todolistReducer";
-import {useAppDispatch} from "common/hooks";
+import {useActions} from "common/hooks";
 
 export const TodolistsList = () => {
-    const dispatch = useAppDispatch()
     const isLoggedIn = useAppSelector<boolean>(state=>state.Auth.isLoggedIn)
+    const { addTodolist } = useActions(todolistThunk)
     const addNewTodolist = (title: string) => {
-        dispatch(todolistThunk.addTodolist(title))}
+        addTodolist(title)
+    }
     if(!isLoggedIn){
         return <Navigate to={"/login"} />
     }
