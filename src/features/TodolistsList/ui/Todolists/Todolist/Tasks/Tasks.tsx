@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect} from 'react';
 import {useSelector} from "react-redux";
 import {RootStateType} from "app/store";
 import {Task} from "features/TodolistsList/ui/Todolists/Todolist/Tasks/Task/Task";
@@ -8,15 +8,14 @@ import s from "features/TodolistsList/ui/Todolists/Todolist/Tasks/Tasks.module.c
 import {tasksThunks} from "features/TodolistsList/model/tasksReducer";
 import {useActions} from "common/hooks";
 
-export type TasksPropsType = {
+export type Props = {
     todolistId: string
     filterStatus: FilterValuesType
     entityStatus: RequestStatusType
 }
 
-export const Tasks = (props:TasksPropsType) => {
+export const Tasks: FC<Props> = ({todolistId, filterStatus, entityStatus}) => {
     const { getTasks } = useActions(tasksThunks)
-    let {todolistId, filterStatus} = props
     useEffect(()=>{
         getTasks(todolistId)
     },[])
@@ -38,7 +37,7 @@ export const Tasks = (props:TasksPropsType) => {
                         taskId = {el.id}
                         taskTitle = {el.title}
                         checkedStatus={el.status}
-                        entityStatus={props.entityStatus}
+                        entityStatus={entityStatus}
                     />
                 )
             })}

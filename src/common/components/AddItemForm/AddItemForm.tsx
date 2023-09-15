@@ -51,62 +51,64 @@ export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
     </div>
 })
 
-
-
-
-// import React, {ChangeEvent, useState, KeyboardEvent} from 'react';
+// import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+// import TextField from '@mui/material/TextField';
+// import IconButton from '@mui/material/IconButton';
+// import {AddBox} from '@mui/icons-material';
+// import {BaseResponseType} from "common/utils/utilsTypes";
 //
-// export type AddItemFormPropsType = {
-//     callback: (value: string) => void
+// type AddItemFormPropsType = {
+//     addItem: (title: string) => Promise<any>
+//     disabled?: boolean
 // }
 //
+// export const AddItemForm = React.memo(function ({addItem, disabled = false}: AddItemFormPropsType) {
 //
-// export const AddItemForm = (props: AddItemFormPropsType) => {
-//     const {callback} = props
-//     let [newTitle, setNewTitle] = useState("")
-//     let [error, setError] = useState<null | string>(null)
+//     let [title, setTitle] = useState('')
+//     let [error, setError] = useState<string | null>(null)
 //
-//     const addTask = () => {
-//         if(newTitle.trim() !== ""){
-//             setNewTitle(newTitle.trim())
-//             callback(newTitle)
-//             setNewTitle("")
+//     const addItemHandler = () => {
+//         if (title.trim() !== '') {
+//             addItem(title)
+//                 .then((res) => {
+//                     setTitle('')
+//                 })
+//                 .catch((err: BaseResponseType) => {
+//                     setError(err.fieldsErrors[0].error);
+//                 })
+//         } else {
+//             setError('Title is required');
 //         }
 //     }
 //
 //     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-//         setNewTitle(e.currentTarget.value)
-//         setError(null)
+//         setTitle(e.currentTarget.value)
 //     }
-//     const onKeyHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-//         if (e.key === "Enter") {
-//             addTask()
+//
+//     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+//         if (error !== null) {
+//             setError(null);
+//         }
+//         if (e.charCode === 13) {
+//             addItemHandler()
 //         }
 //     }
-//     const onClickHandler = () => {
-//         addTask()
-//     }
-//     return (
-//         <div>
-//             {/*<input*/}
-//             {/*    value={newTitle}*/}
-//             {/*    onChange={onChangeHandler}*/}
-//             {/*    onKeyDown={onKeyHandler}*/}
-//             {/*/>*/}
-//             {/*<button onClick={onClickHandler}>Add</button>*/}
-//             <TextField variant="outlined"
-//                        error={!!error}
-//                        value={title}
-//                        onChange={onChangeHandler}
-//                        onKeyPress={onKeyPressHandler}
-//                        label="Title"
-//                        helperText={error}
-//             />
-//             <IconButton color="primary" onClick={addItem}>
-//                 <AddBox/>
-//             </IconButton>
-//             {error && <h3>{error}</h3>}
-//         </div>
-//     );
-// };
 //
+//     return <div>
+//         <TextField variant="outlined"
+//                    error={!!error}
+//                    value={title}
+//                    onChange={onChangeHandler}
+//                    onKeyPress={onKeyPressHandler}
+//                    label="Title"
+//                    helperText={error}
+//                    disabled={disabled}
+//         />
+//         <IconButton color="primary" onClick={addItemHandler} disabled={disabled}>
+//             <AddBox/>
+//         </IconButton>
+//     </div>
+// })
+
+
+

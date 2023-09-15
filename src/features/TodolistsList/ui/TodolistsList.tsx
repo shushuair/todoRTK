@@ -21,7 +21,7 @@ export const TodolistsList = () => {
             <h1>TODOLISTS</h1>
             <h3>Add Todolist</h3>
             <div className={s.App_addItemForm}>
-                <AddItemForm addItem={addNewTodolist}/>
+                <AddItemForm addItem={addTodolist}/>
             </div>
             <Todolists />
         </div>
