@@ -23,27 +23,27 @@ type Props = {
 export const Todolist = (props: Props) => {
     const { addTask } = useActions(tasksThunks)
     const { removeTodolist, updateTitleTodolist } = useActions(todolistThunk)
+    const {updateTodolistStatusFilter} = useActions(todolistsActions)
 
     const {todolistId, todolistTitle,filterStatus, entityStatus} = props
-    const dispatch = useAppDispatch()
     const removeTodolistHandler = () => {
         removeTodolist(todolistId)
     }
-    const editTodoTitleHandler = (newTitle: string) => {
+    const changeTodoTitleHandler = (newTitle: string) => {
         updateTitleTodolist({id: todolistId, title: newTitle})
     }
     const addTaskHandler = (newValue: string) => {
         addTask({todolistId, title: newValue})
     }
-    const newStatusFilterButton = (newStatusFilter: FilterValuesType) => {
-        dispatch(todolistsActions.updateTodolistStatusFilter({todolistId, newStatusFilter}))
+    const newStatusFilter = (newStatusFilter: FilterValuesType) => {
+        updateTodolistStatusFilter({todolistId, newStatusFilter})
     }
 
     return (
         <div className={s.TodolistWrapper}>
             <div className={s.TodolistTitle}>
                 <h2>
-                    <EditableSpan value={todolistTitle} onChange={editTodoTitleHandler}/>
+                    <EditableSpan value={todolistTitle} onChange={changeTodoTitleHandler}/>
                 </h2>
                 <IconButton onClick={removeTodolistHandler} disabled={entityStatus === "loading"} >
                     <Delete/>
@@ -54,9 +54,9 @@ export const Todolist = (props: Props) => {
             </div>
             <Tasks todolistId={todolistId} filterStatus={filterStatus} entityStatus={props.entityStatus}/>
             <ButtonGroup variant="contained" aria-label="outlined primary button group">
-                <Button onClick={() => newStatusFilterButton("all")} >All</Button>
-                <Button onClick={() => newStatusFilterButton("active")} >Active</Button>
-                <Button onClick={() => newStatusFilterButton("completed")} >Completed</Button>
+                <Button onClick={() => newStatusFilter("all")} >All</Button>
+                <Button onClick={() => newStatusFilter("active")} >Active</Button>
+                <Button onClick={() => newStatusFilter("completed")} >Completed</Button>
             </ButtonGroup>
 
 
